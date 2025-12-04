@@ -1,16 +1,41 @@
+async function checkTokenGraphQL(token) {
+    const query = `
+    query {
+      viewer {
+        login
+        id
+        email
+      }
+    }
+  `;
+
+    const res = await fetch("https://api.github.com/graphql", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ query })
+    });
+
+    const data = await res.json();
+
+    if (data.errors) {
+        console.log("Токен невалиден", data.errors);
+        return null;
+    }
+
+    console.log("Токен валиден. Пользователь:", data.data.viewer.login);
+    return data.data.viewer;
+}
+
 const tokenInput = ({ auth }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
         const formData = new FormData(e.target);
         const token = formData.get('token');
-        {/* логика аутентификации на gh */}
-        if (token === '1') { {/* заглушка */}
-            auth()
-        }
-        else {
-            alert('Неверно')
-        }
+        checkTokenGraphQL(token).then(() => auth(token)).catch(err => console.log(err));
     }
 
     return <>
