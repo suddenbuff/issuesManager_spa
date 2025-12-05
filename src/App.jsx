@@ -30,7 +30,7 @@ function App() {
     localStorage.setItem("data", `${data.owner.login}/${data.name}`);
   };
 
-  if (!token) <Container maxWidth="sm"><Box mt={8}><TokenInput auth={handleUnlock}/></Box></Container>
+  if (!token) return <Container maxWidth="sm"><Box mt={8}><TokenInput auth={handleUnlock}/></Box></Container>
 
   return <>
         <AppBar position="static" color="primary">
