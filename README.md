@@ -8,3 +8,14 @@
 1) Объединить формы для ввода токена и репо
 2) Нормальное отображение md разметки в тексте issue
 3) рефактор issueslist и некоторых стилей
+
+# Установка
+```cmd
+git clone https://github.com/suddenbuff/issuesManager_spa.git
+cd issuesManager_spa
+npm install
+npm run dev
+```
+
+# Генерация токена
+Settings -> Developer settings -> Personal access tokens -> Fine-grained tokens -> Generate new token -> Вводите имя для токена ->  Repository Access: All repositories -> Permissions -> Add permissions -> Поставить галочки Issues
