@@ -1,52 +1,46 @@
-async function checkTokenGraphQL(token) {
-    const query = `
-    query {
-      viewer {
-        login
-        id
-        email
-      }
-    }
-  `;
+import {useState} from 'react'
 
+async function checkToken(token) {
+    const query = `query {viewer {login}}`;
     const res = await fetch("https://api.github.com/graphql", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ query })
+        body: JSON.stringify({query})
     });
-
+    if (!res.ok) throw new Error(`HTTP вернул ${res.status}`);
     const data = await res.json();
-
-    if (data.errors) {
-        console.log("Токен невалиден", data.errors);
-        return null;
-    }
-
-    console.log("Токен валиден. Пользователь:", data.data.viewer.login);
-    return data.data.viewer;
+    if (!data.data || data.errors) throw new Error("Неправильный токен");
+    return data.data.viewer.login;
 }
 
-const tokenInput = ({ auth }) => {
-
-    const handleSubmit = (e) => {
+const TokenInput = ({auth}) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        const formData = new FormData(e.target);
-        const token = formData.get('token');
-        checkTokenGraphQL(token).then(() => auth(token)).catch(err => console.log(err));
+        setError(null);
+        try {
+            const formData = new FormData(e.target);
+            const token = formData.get('token');
+            const login = await checkToken(token)
+            auth(token, login)
+        }
+        catch (error) {
+            setError(error.message);
+        }
     }
 
+    const [error, setError] = useState(null);
+
     return <>
-        <div> {/* style={} добавить стилей, чтоб был чисто по центру */}
-            <h1>Введите токен</h1>
-            <form onSubmit={handleSubmit}>
-                <input name="token"/> {/* Можно добавить валидацию токена, если он имеет какую-то особую форму */}
-                <input type="submit" value="Отправить"/>
-            </form>
-        </div>
+        <h1>Введите токен</h1>
+        <form onSubmit={handleSubmit}>
+            <input name="token"/> {/* Можно добавить валидацию токена, если он имеет какую-то особую форму, хотя учитывая количество запросов к api, мб и не нужно*/}
+            <input type="submit" value="Отправить"/>
+        </form>
+        {error && <div>Ошибка: {error}</div>}
     </>
 }
 
-export default tokenInput;
+export default TokenInput;
