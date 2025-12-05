@@ -1,14 +1,15 @@
-import {useState} from 'react'
+import {useState} from "react";
+import {Box, TextField, Button, Typography, Alert, Stack, Paper} from "@mui/material";
 
 async function checkToken(token) {
-    const query = `query {viewer {login}}`;
+    const query = `query { viewer { login } }`;
     const res = await fetch("https://api.github.com/graphql", {
         method: "POST",
         headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify({query})
+        body: JSON.stringify({ query }),
     });
     if (!res.ok) throw new Error(`HTTP вернул ${res.status}`);
     const data = await res.json();
@@ -16,31 +17,34 @@ async function checkToken(token) {
     return data.data.viewer.login;
 }
 
-const TokenInput = ({auth}) => {
+const TokenInput = ({ auth }) => {
+    const [error, setError] = useState(null);
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         setError(null);
         try {
             const formData = new FormData(e.target);
-            const token = formData.get('token');
-            const login = await checkToken(token)
-            auth(token, login)
+            const token = formData.get("token");
+            const login = await checkToken(token);
+            auth(token, login);
         }
         catch (error) {
             setError(error.message);
         }
-    }
+    };
 
-    const [error, setError] = useState(null);
-
-    return <>
-        <h1>Введите токен</h1>
-        <form onSubmit={handleSubmit}>
-            <input name="token"/> {/* Можно добавить валидацию токена, если он имеет какую-то особую форму, хотя учитывая количество запросов к api, мб и не нужно*/}
-            <input type="submit" value="Отправить"/>
-        </form>
-        {error && <div>Ошибка: {error}</div>}
-    </>
-}
+    return (
+        <Paper p={4}>
+            <Typography variant="h5" mb={2}>Введите GitHub Token</Typography>
+            <Box component="form" onSubmit={handleSubmit}>
+                <Stack spacing={2}>
+                    <TextField name="token" fullWidth/>
+                    <Button type="submit" variant="contained" size="large">Войти</Button>
+                    {error && <Alert severity="error">Ошибка: {error}</Alert>}
+                </Stack>
+            </Box>
+        </Paper>
+    );
+};
 
 export default TokenInput;
