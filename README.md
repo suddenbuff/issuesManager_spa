@@ -8,6 +8,7 @@
 1) Объединить формы для ввода токена и репо
 2) Нормальное отображение md разметки в тексте issue
 3) рефактор issueslist и некоторых стилей
+4) поискать можно ли через fine grained token оставлять комментарии к issues в чужих репо
 
 # Установка
 ```cmd
@@ -18,4 +19,4 @@ npm run dev
 ```
 
 # Генерация токена
-Settings -> Developer settings -> Personal access tokens -> Fine-grained tokens -> Generate new token -> Вводите имя для токена ->  Repository Access: All repositories -> Permissions -> Add permissions -> Поставить галочки Issues
+Settings -> Developer settings -> Personal access tokens -> Tokens (classic) -> Generate new token (classic) -> Ввести Note -> Select scopes -> repo -> public_repo. Достаточно только ее
