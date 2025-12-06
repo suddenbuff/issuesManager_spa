@@ -8,3 +8,8 @@
 1) Объединить формы для ввода токена и репо
 2) Нормальное отображение md разметки в тексте issue
 3) рефактор issueslist и некоторых стилей
+4) поискать можно ли через fine grained token оставлять комментарии к issues в чужих репо
+
+
+# генерация токена
+Settings -> Developer settings -> Personal access tokens -> Tokens (classic) -> Generate new token (classic) -> Ввести Note -> Select scopes -> repo -> public_repo. Достаточно только ее
